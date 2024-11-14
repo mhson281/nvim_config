@@ -24,7 +24,6 @@ return {
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
   },
   {
-<<<<<<< HEAD
     'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup {
@@ -39,16 +38,11 @@ return {
     event = "BufRead", -- Load gitsigns when opening a buffer
   },
   {
-=======
->>>>>>> c5021904be543f948b24c623233a84ce8edc7d97
     "github/copilot.vim",
     config = function()
       require("configs.copilot").setup()
     end,
-<<<<<<< HEAD
-=======
     -- Load Copilot on Insert mode (lazy-load)
->>>>>>> c5021904be543f948b24c623233a84ce8edc7d97
     event = "InsertEnter",
   },
   {
