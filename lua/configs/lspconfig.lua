@@ -26,6 +26,16 @@ for _, lsp in ipairs(servers) do
     }
 end
 
+
+-- Loop through the servers and configure them with nvchad's default settings
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    on_attach = nvlsp.on_attach,
+    on_init = nvlsp.on_init,
+    capabilities = nvlsp.capabilities,
+  }
+end
+
 -- Specific configurations for certain servers (if needed)
 
 -- Go (gopls)

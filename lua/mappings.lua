@@ -11,8 +11,4 @@ map('t', '<Esc>', '<C-\\><C-n>', options)
 -- Vertical split and open file
 map('n', '<leader>sv', ':vsplit<CR>:Telescope find_files<CR>', options)
 
--- Horizontal split and open file
-map('n', '<leader>sh', ':split<CR>:Telescope find_files<CR>', options)
-
-
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
