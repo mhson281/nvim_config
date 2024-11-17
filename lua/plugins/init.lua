@@ -1,7 +1,6 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
   {
@@ -23,6 +22,20 @@ return {
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+  },
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        current_line_blame = true, -- Enables Git Blame for the current line
+        current_line_blame_opts = {
+          virt_text = true, -- Display blame as virtual text
+          virt_text_pos = 'eol', -- Position of the virtual text
+          delay = 100, -- Delay before showing blame
+        },
+      }
+    end,
+    event = "BufRead", -- Load gitsigns when opening a buffer
   },
   {
     "github/copilot.vim",
@@ -47,3 +60,4 @@ return {
     },
   },
 }
+
