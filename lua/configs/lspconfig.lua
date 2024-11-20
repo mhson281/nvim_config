@@ -4,12 +4,6 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
 
--- Define a function to format on save
-local function format_on_save(client, bufnr)
-    if client.resolved_capabilities.document_formatting then
-        vim.api.nvim_command("autocmd BufWritePre <buffer=" .. bufnr .. "> lua vim.lsp.buf.formatting_sync()")
-    end
-end
 
 -- Define the servers you want to set up with default configurations
 local servers = { "html", "cssls", "gopls", "pyright", "yamlls", "lua_ls" }
@@ -19,7 +13,6 @@ for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
         on_attach = function(client, bufnr)
             nvlsp.on_attach(client, bufnr)  -- Call the default on_attach function
-            format_on_save(client, bufnr)   -- Call the format_on_save function
         end,
         on_init = nvlsp.on_init,
         capabilities = nvlsp.capabilities,
@@ -42,7 +35,6 @@ end
 lspconfig.gopls.setup {
     on_attach = function(client, bufnr)
         nvlsp.on_attach(client, bufnr)
-        format_on_save(client, bufnr)
     end,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
@@ -60,7 +52,6 @@ lspconfig.gopls.setup {
 lspconfig.pyright.setup {
     on_attach = function(client, bufnr)
         nvlsp.on_attach(client, bufnr)
-        format_on_save(client, bufnr)
     end,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
@@ -70,7 +61,6 @@ lspconfig.pyright.setup {
 lspconfig.yamlls.setup {
     on_attach = function(client, bufnr)
         nvlsp.on_attach(client, bufnr)
-        format_on_save(client, bufnr)
     end,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
@@ -87,7 +77,6 @@ lspconfig.yamlls.setup {
 lspconfig.lua_ls.setup {
     on_attach = function(client, bufnr)
         nvlsp.on_attach(client, bufnr)
-        format_on_save(client, bufnr)
     end,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
