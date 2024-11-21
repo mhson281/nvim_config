@@ -58,6 +58,14 @@ return {
       },
       auto_install = true,
     },
+    {
+      "diegoulloao/nvim-file-location",
+      config = function()
+         require("nvim-file-location").setup({
+            -- Optional configuration settings
+         })
+      end,
+   },
   },
 }
 
