@@ -3,7 +3,7 @@
 local M = {}
 
 M.base46 = {
-   theme = "catppuccin", -- Set the base theme to Catppuccin
+   theme = "gruvchad", -- Set the base theme to Catppuccin
    hl_add = {},
    hl_override = {},
    integrations = {},
