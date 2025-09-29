@@ -1,95 +1,66 @@
--- load defaults i.e lua_lsp
-require("nvchad.configs.lspconfig").defaults()
+-- lua/configs/lspconfig.lua (NvChad)
+-- Load NvChad defaults (cmp capabilities, etc.)
+local nvlsp = require("nvchad.configs.lspconfig")
+nvlsp.defaults()
 
-local lspconfig = require "vim.lsp.config"
-local nvlsp = require "nvchad.configs.lspconfig"
+-- Correct lspconfig import
+local lspconfig = require("lspconfig")
 
-
--- Define the servers you want to set up with default configurations
+-- Base servers that use defaults only
 local servers = { "html", "cssls", "gopls", "pyright", "yamlls", "lua_ls" }
 
--- Loop through the servers and configure them with nvchad's default settings
-for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup {
-        on_attach = function(client, bufnr)
-            nvlsp.on_attach(client, bufnr)  -- Call the default on_attach function
-        end,
-        on_init = nvlsp.on_init,
-        capabilities = nvlsp.capabilities,
-    }
-end
-
-
--- Loop through the servers and configure them with nvchad's default settings
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
+for _, name in ipairs(servers) do
+  lspconfig[name].setup {
     on_attach = nvlsp.on_attach,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
   }
 end
 
--- Specific configurations for certain servers (if needed)
+-- ---- Overrides below (only where you need custom settings) ----
 
--- Go (gopls)
+-- Go
 lspconfig.gopls.setup {
-    on_attach = function(client, bufnr)
-        nvlsp.on_attach(client, bufnr)
-    end,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-    settings = {
-        gopls = {
-            analyses = {
-                unusedparams = true,
-            },
-            staticcheck = true,
-        },
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    gopls = {
+      analyses = { unusedparams = true },
+      staticcheck = true,
     },
+  },
 }
 
--- Python (pyright)
-lspconfig.pyright.setup {
-    on_attach = function(client, bufnr)
-        nvlsp.on_attach(client, bufnr)
-    end,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-}
-
--- YAML (yamlls)
+-- YAML
 lspconfig.yamlls.setup {
-    on_attach = function(client, bufnr)
-        nvlsp.on_attach(client, bufnr)
-    end,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-    settings = {
-        yaml = {
-            schemas = {
-                ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
-            },
-        },
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    yaml = {
+      keyOrdering = false,
+      schemaStore = { enable = true },
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+      },
     },
+  },
 }
 
--- Lua (sumneko_lua or lua_ls)
+-- Lua
 lspconfig.lua_ls.setup {
-    on_attach = function(client, bufnr)
-        nvlsp.on_attach(client, bufnr)
-    end,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { "vim" },  -- Recognize 'vim' as a global for Neovim configs
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true), -- Autodetect Neovim runtime files
-                checkThirdParty = false,
-            },
-        },
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    Lua = {
+      diagnostics = { globals = { "vim" } },
+      workspace = {
+        checkThirdParty = false,
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      telemetry = { enable = false },
     },
+  },
 }
-
