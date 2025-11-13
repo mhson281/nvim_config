@@ -3,7 +3,7 @@ local M = {}
 M.setup = function()
   -- Disable default Tab key behavior and map to Ctrl+J
   vim.g.copilot_no_tab_map = true
-  vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+  vim.api.nvim_set_keymap("i", "<C-j>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 
   -- Enable Copilot for specific filetypes
   vim.g.copilot_filetypes = {

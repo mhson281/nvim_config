@@ -10,6 +10,32 @@ return {
     end,
   },
   {
+  "cuducos/yaml.nvim",
+  ft = { "yaml" }, -- optional
+  dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+   },
+   config = function()
+      -- Optional: ensure YAML TS parser is installed
+      require("nvim-treesitter.configs").setup {
+        ensure_installed = { "yaml" },
+      }
+
+      -- Auto-update Winbar with YAML path
+      local yaml = require("yaml_nvim")
+
+      vim.api.nvim_create_autocmd({ "BufEnter", "CursorMoved" }, {
+        pattern = { "*.yaml", "*.yml" },
+        callback = function()
+          local ok, path = pcall(yaml.get_yaml_key_and_value)
+          if ok and path then
+            vim.opt_local.winbar = path
+          end
+        end,
+      })
+    end,
+  },
+  {
     "ray-x/go.nvim",
     dependencies = { -- optional packages
       "ray-x/guihua.lua",
@@ -62,7 +88,6 @@ return {
       "diegoulloao/nvim-file-location",
       config = function()
          require("nvim-file-location").setup({
-            -- Optional configuration settings
          })
       end,
    },

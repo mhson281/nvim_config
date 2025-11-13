@@ -12,7 +12,7 @@ map('t', '<Esc>', '<C-\\><C-n>', options)
 map('n', '<leader>sv', ':vsplit<CR>:Telescope find_files<CR>', options)
 
 -- copy file path for current file to clipboard
-map('n', '<leader>cf', function()
+map('n', '<leader>ll', function()
    local file = vim.fn.expand('%:p')
    local file_location = string.format('%s', file)
    vim.fn.setreg('+', file_location) -- Copy to clipboard

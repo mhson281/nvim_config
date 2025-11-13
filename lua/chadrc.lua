@@ -3,10 +3,11 @@
 local M = {}
 
 M.base46 = {
-   theme = "catppuccin", -- Set the base theme to Catppuccin
-   hl_add = {},
-   hl_override = {},
-   integrations = {},
+   theme = "gruvchad", 
+   hl_override = {
+   LineNr = { fg = "#5e5e5e", bg = "NONE" },
+   CursorLineNr = { fg = "#d4be98", bg = "NONE", bold = true },
+   },
 }
 
 M.ui = {
