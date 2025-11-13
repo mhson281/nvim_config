@@ -1,25 +1,26 @@
+---@diagnostic disable: undefined-global
 return {
   {
     "stevearc/conform.nvim",
     opts = require "configs.conform",
   },
+
   {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
     end,
   },
+
+  -- YAML helper
   {
-  "cuducos/yaml.nvim",
-  ft = { "yaml" }, -- optional
-  dependencies = {
+    "cuducos/yaml.nvim",
+    ft = { "yaml", "yml" }, -- handle both
+    dependencies = {
       "nvim-treesitter/nvim-treesitter",
-   },
-   config = function()
-      -- Optional: ensure YAML TS parser is installed
-      require("nvim-treesitter.configs").setup {
-        ensure_installed = { "yaml" },
-      }
+    },
+    config = function()
+      -- We already configure treesitter below, so no need to call setup here
 
       -- Auto-update Winbar with YAML path
       local yaml = require("yaml_nvim")
@@ -28,16 +29,22 @@ return {
         pattern = { "*.yaml", "*.yml" },
         callback = function()
           local ok, path = pcall(yaml.get_yaml_key_and_value)
-          if ok and path then
+          if ok and path and path ~= "" then
+            -- IMPORTANT: escape % so winbar doesn't treat them as statusline items
+            path = path:gsub("%%", "%%%%")
             vim.opt_local.winbar = path
+          else
+            -- fallback if nothing found
+            vim.opt_local.winbar = nil
           end
         end,
       })
     end,
   },
+
   {
     "ray-x/go.nvim",
-    dependencies = { -- optional packages
+    dependencies = {
       "ray-x/guihua.lua",
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
@@ -47,30 +54,33 @@ return {
     end,
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
-    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+    build = ':lua require("go.install").update_all_sync()',
   },
+
   {
-    'lewis6991/gitsigns.nvim',
+    "lewis6991/gitsigns.nvim",
+    event = "BufRead", -- Load gitsigns when opening a buffer
     config = function()
-      require('gitsigns').setup {
-        current_line_blame = true, -- Enables Git Blame for the current line
+      require("gitsigns").setup {
+        current_line_blame = true,
         current_line_blame_opts = {
-          virt_text = true, -- Display blame as virtual text
-          virt_text_pos = 'eol', -- Position of the virtual text
-          delay = 100, -- Delay before showing blame
+          virt_text = true,
+          virt_text_pos = "eol",
+          delay = 100,
         },
       }
     end,
-    event = "BufRead", -- Load gitsigns when opening a buffer
   },
+
   {
     "github/copilot.vim",
+    event = "InsertEnter", -- lazy-load on insert
     config = function()
       require("configs.copilot").setup()
     end,
-    -- Load Copilot on Insert mode (lazy-load)
-    event = "InsertEnter",
   },
+
+  -- Treesitter config
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -81,16 +91,18 @@ return {
         "html",
         "css",
         "go",
+        "yaml", -- add yaml here
       },
       auto_install = true,
     },
-    {
-      "diegoulloao/nvim-file-location",
-      config = function()
-         require("nvim-file-location").setup({
-         })
-      end,
-   },
+  },
+
+  -- nvim-file-location needs its own top-level plugin spec
+  {
+    "diegoulloao/nvim-file-location",
+    config = function()
+      require("nvim-file-location").setup({})
+    end,
   },
 }
 
