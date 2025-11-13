@@ -1,47 +1,42 @@
--- lua/configs/lspconfig.lua (NvChad)
+-- lua/configs/lspconfig.lua
 
----@diagnostic disable: deprecated
 ---@diagnostic disable: undefined-global
 
--- Load NvChad defaults (cmp capabilities, etc.)
+-- NvChad defaults (cmp capabilities, etc.)
 local nvlsp = require("nvchad.configs.lspconfig")
 nvlsp.defaults()
 
--- Use the actual lspconfig module (still required for NvChad)
----@diagnostic disable-next-line: undefined-global
-local lspconfig = require("lspconfig")
-
--- Servers that just use the defaults
-local servers = { "html", "cssls", "pyright" }
-
-for _, name in ipairs(servers) do
-  lspconfig[name].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
-end
-
--- ---- Overrides below (only where you need custom settings) ----
-
--- Go
-lspconfig.gopls.setup {
+-- Base config shared by all servers
+local base = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
+}
+
+-- Helper to merge base config + extra config, then register + enable server
+local function setup(server_name, extra)
+  local cfg = vim.tbl_deep_extend("force", base, extra or {})
+  vim.lsp.config(server_name, cfg)
+  vim.lsp.enable(server_name)
+end
+
+-- Simple servers that just use defaults
+setup("html")
+setup("cssls")
+setup("pyright")
+
+-- Go (gopls)
+setup("gopls", {
   settings = {
     gopls = {
       analyses = { unusedparams = true },
       staticcheck = true,
     },
   },
-}
+})
 
--- YAML
-lspconfig.yamlls.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+-- YAML (yamlls)
+setup("yamlls", {
   settings = {
     yaml = {
       keyOrdering = false,
@@ -51,16 +46,15 @@ lspconfig.yamlls.setup {
       },
     },
   },
-}
+})
 
--- Lua
-lspconfig.lua_ls.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+-- Lua (lua_ls)
+setup("lua_ls", {
   settings = {
     Lua = {
-      diagnostics = { globals = { "vim" } },
+      diagnostics = {
+        globals = { "vim" },
+      },
       workspace = {
         checkThirdParty = false,
         library = vim.api.nvim_get_runtime_file("", true),
@@ -68,5 +62,4 @@ lspconfig.lua_ls.setup {
       telemetry = { enable = false },
     },
   },
-}
-
+})
