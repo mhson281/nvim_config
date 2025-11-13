@@ -1,13 +1,18 @@
 -- lua/configs/lspconfig.lua (NvChad)
+
+---@diagnostic disable: deprecated
+---@diagnostic disable: undefined-global
+
 -- Load NvChad defaults (cmp capabilities, etc.)
 local nvlsp = require("nvchad.configs.lspconfig")
 nvlsp.defaults()
 
--- Correct lspconfig import
+-- Use the actual lspconfig module (still required for NvChad)
+---@diagnostic disable-next-line: undefined-global
 local lspconfig = require("lspconfig")
 
--- Base servers that use defaults only
-local servers = { "html", "cssls", "gopls", "pyright", "yamlls", "lua_ls" }
+-- Servers that just use the defaults
+local servers = { "html", "cssls", "pyright" }
 
 for _, name in ipairs(servers) do
   lspconfig[name].setup {
@@ -64,3 +69,4 @@ lspconfig.lua_ls.setup {
     },
   },
 }
+
