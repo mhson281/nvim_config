@@ -63,3 +63,23 @@ setup("lua_ls", {
     },
   },
 })
+
+setup("terraformls", {
+  filetypes = { "terraform", "tf" , "terraform-vars"},
+  settings = {
+    terraform = {
+      languageServer = {
+        external = true,
+        source = "terraform-ls",
+      }
+    }
+  }
+})
+
+setup("tflint", {
+  filetypes = { "terraform", "tf" , "terraform-vars"},
+})
+
+setup("hcl_ls", {
+  filetypes = { "hcl", "tf", "terraform-vars" },
+})
