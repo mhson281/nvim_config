@@ -6,6 +6,8 @@
 local nvlsp = require("nvchad.configs.lspconfig")
 nvlsp.defaults()
 
+local lsp_util = require("lspconfig.util")
+
 -- Base config shared by all servers
 local base = {
   on_attach = nvlsp.on_attach,
@@ -64,22 +66,23 @@ setup("lua_ls", {
   },
 })
 
+-- Terraform (terraformls)
 setup("terraformls", {
-  filetypes = { "terraform", "tf" , "terraform-vars"},
-  settings = {
-    terraform = {
-      languageServer = {
-        external = true,
-        source = "terraform-ls",
-      }
-    }
-  }
+  -- use mason's terraform-ls if you installed via Mason
+  cmd = {
+    vim.fn.stdpath("data") .. "/mason/bin/terraform-ls",
+    "serve",
+  },
+  filetypes = { "terraform", "hcl", "terraform-vars" },
+  root_dir = function(fname)
+    -- keep root reasonably small so terraform-ls doesn't scan $HOME
+    return lsp_util.root_pattern(".terraform", ".git", "main.tf", "terraform.tf")(fname)
+      or lsp_util.path.dirname(fname)
+  end,
 })
 
-setup("tflint", {
-  filetypes = { "terraform", "tf" , "terraform-vars"},
-})
-
+-- HCL (hcl_ls)
 setup("hcl_ls", {
-  filetypes = { "hcl", "tf", "terraform-vars" },
+  filetypes = { "hcl", "tfvars" },
 })
+
